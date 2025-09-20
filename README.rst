@@ -3,17 +3,5 @@ tutorial_canciones
 ==================
 
 
-Add a short description here!
-
-
-Description
-===========
-
-A longer description of your project goes here...
-
-
-Note
-====
-
-This project has been set up using PyScaffold 3.2.3. For details and usage
-information on PyScaffold see https://pyscaffold.org/.
+Este proyecto usa [Poetry](https://python-poetry.org/) para la gestión de dependencias y el empaquetado. Asegúrate de tener Poetry instalado en tu entorno de desarrollo.
+Puedes instalar Poetry siguiendo las instrucciones en su [sitio web oficial](https://python-poetry.org/docs/#installation).
