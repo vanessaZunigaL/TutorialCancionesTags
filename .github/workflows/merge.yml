@@ -39,12 +39,12 @@ jobs:
           git config user.name "github-actions"
           git config user.email "actions@github.com"
 
-      - name: Merge into main
+      - name: Merge into develop
         run: |
           BRANCH_NAME=${GITHUB_REF#refs/heads/}
-          echo "Merging branch $BRANCH_NAME into main"
+          echo "Merging branch $BRANCH_NAME into develop"
 
-          git fetch origin main
-          git checkout main
+          git fetch origin develop
+          git checkout develop
           git merge origin/$BRANCH_NAME --no-edit
-          git push origin main
+          git push origin develop
