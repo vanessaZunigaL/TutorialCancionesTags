@@ -1,46 +1,50 @@
-name: Automerge
+name: Auto Merge Release Branches
+
 on:
-  pull_request:
-    types:
-      - labeled
-      - unlabeled
-      - synchronize
-      - opened
-      - edited
-      - ready_for_review
-      - reopened
-      - unlocked
-    branches: [ develop ]
+  push:
+    branches:
+      - '*release*'  # cualquier rama que tenga "release" en el nombre
+
 jobs:
   job1:
-      name: Pruebas
-      runs-on: ubuntu-latest
-      steps:
-      - name: Checkout de repositorio
-        uses: actions/checkout@v2
-      - name: Configuración de entorno de python
-        uses: actions/setup-python@v4
-        with:
-            python-version: '3.8'
-      - name: Instalación de librerías y dependencias
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-      - name: Correr pruebas
-        id: correr-pruebas
-        run: python -m unittest discover -s tests
-      - name: Cálculo de cubrimiento
-        id: cubrimiento
-        run: |
-            coverage run -m unittest discover -s tests
-            coverage report -m
-  automerge:
-    name: Automerge
-    needs: job1
+    name: Pruebas
     runs-on: ubuntu-latest
     steps:
-      - name: automerge
-        uses: "pascalgn/automerge-action@v0.16.4"
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          MERGE_LABELS: ""
+    - name: Checkout de repositorio
+      uses: actions/checkout@v2
+    - name: Configuración de entorno de python
+      uses: actions/setup-python@v4
+      with:
+          python-version: '3.8'
+    - name: Instalación de librerías y dependencias
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Correr pruebas
+      id: correr-pruebas
+      run: python -m unittest discover -s tests
+    - name: Cálculo de cubrimiento
+      id: cubrimiento
+      run: |
+          coverage run -m unittest discover -s tests
+          coverage report -m
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+
+      - name: Merge into main
+        run: |
+          BRANCH_NAME=${GITHUB_REF#refs/heads/}
+          echo "Merging branch $BRANCH_NAME into main"
+
+          git fetch origin main
+          git checkout main
+          git merge origin/$BRANCH_NAME --no-edit
+          git push origin main
